@@ -2,6 +2,11 @@ package ec.edu.ups.ppw64.demo64.services;
 
 import java.util.List;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
 import config.ConfigJaeger;
 import ec.edu.ups.ppw64.demo64.business.GestionMensajesUsuarios;
 import ec.edu.ups.ppw64.demo64.model.MensajesUsuarios;
@@ -31,7 +36,49 @@ public class MensajeUsuarioServices {
 	@Inject
 	private ConfigJaeger configjaeger;
 	
-	@POST
+	private static final String SERVER_URL = "http://servidor-de-correos:puerto/email/enviar"; // Ajusta la URL y el puerto según tu configuración
+
+    private CloseableHttpClient httpClient = HttpClients.createDefault();
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response crear(MensajesUsuarios mensajesUsuarios) {
+        Span span = tracer.buildSpan("creacion_de_mensajes").start();
+        try {
+            gMsjUsuarios.guardarMensajesUsuarioss(mensajesUsuarios); // Suponiendo que esta línea guarda el mensaje de usuario
+
+            // Aquí se envía el correo solo si se guardó el mensaje correctamente
+
+            HttpPost request = new HttpPost(SERVER_URL);
+
+            CloseableHttpResponse response = httpClient.execute(request);
+
+            try {
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == 201) {
+                    ErrorMessage error = new ErrorMessage(1, "Mensaje creado y correo enviado correctamente");
+                    return Response.status(Response.Status.CREATED).entity(error).build();
+                } else {
+                    ErrorMessage error = new ErrorMessage(99, "Error al enviar el correo: " + response.getStatusLine().getReasonPhrase());
+                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                            .entity(error)
+                            .build();
+                }
+            } finally {
+                response.close();
+            }
+        } catch (Exception e) {
+            ErrorMessage error = new ErrorMessage(99, e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error)
+                    .build();
+        } finally {
+            span.finish();
+        }
+    }
+	
+/*	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response crear (MensajesUsuarios mensajesUsuarios) {
@@ -51,7 +98,7 @@ public class MensajeUsuarioServices {
 			span.finish();
 		}
 	}
-	
+*/
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)

@@ -116,6 +116,12 @@
 	<dependencies>
 
 		<!-- Dependencias insertadas por mi-->
+		
+		<dependency>
+    <groupId>com.resend</groupId>
+    <artifactId>resend-java</artifactId>
+    <version>2.0.0</version>
+</dependency>
 
 		<dependency>
 			<groupId>jakarta.json.bind</groupId>
@@ -131,6 +137,12 @@
 			<artifactId>jakarta.enterprise.cdi-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.13</version> <!-- Puedes ajustar la versión según la compatibilidad y tus requisitos -->
+    </dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
