@@ -33,15 +33,14 @@ public class MensajeUsuarioServices {
 	
 	private EmailServiceClient emailServiceClient = new EmailServiceClient();
 
-	@POST
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response crear(MensajesUsuarios mensajesUsuarios) {
         try {
             gMsjUsuarios.guardarMensajesUsuarioss(mensajesUsuarios); // Suponiendo que esta línea guarda el mensaje de usuario
 
-            Email email = new Email("mateosigua2002@gmail.com", "Ventadas", "Se agrego un mensaje"); // Cambia esto con los datos necesarios
-            emailServiceClient.enviarCorreo(email);
+            emailServiceClient.enviarCorreo();
             ErrorMessage error = new ErrorMessage(1, "Mensaje creado y correo enviado correctamente");
             return Response.status(Response.Status.CREATED).entity(error).build();
         } catch (Exception e) {
