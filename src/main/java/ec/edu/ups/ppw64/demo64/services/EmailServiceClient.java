@@ -17,12 +17,10 @@ public class EmailServiceClient {
         this.restTemplate = new RestTemplate();
     }
 
-    public void enviarCorreo(String destinatario, String asunto, String contenido) {
+    public void enviarCorreo() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // Construir el cuerpo de la solicitud;
-
+        // Crear una solicitud POST sin cuerpo
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         try {

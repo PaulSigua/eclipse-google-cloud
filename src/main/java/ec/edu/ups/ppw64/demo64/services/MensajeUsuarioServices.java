@@ -45,11 +45,8 @@ public class MensajeUsuarioServices {
         Span span = tracer.buildSpan("creacion_de_mensajes").start();
         try {
             gMsjUsuarios.guardarMensajesUsuarioss(mensajesUsuarios); // Suponiendo que esta línea guarda el mensaje de usuario
-            String destinatario = "";
-            String asunto = "";
-            String contenido = "";
 
-            emailServiceClient.enviarCorreo(destinatario,asunto,contenido);
+            emailServiceClient.enviarCorreo();
             ErrorMessage error = new ErrorMessage(1, "Mensaje creado y correo enviado correctamente");
             return Response.status(Response.Status.CREATED).entity(error).build();
         } catch (Exception e) {
@@ -127,6 +124,7 @@ public class MensajeUsuarioServices {
 		List<MensajesUsuarios> mensajes = gMsjUsuarios.getMensajes();
 		if(mensajes.size()>0)
 			return Response.ok(mensajes).build();
+        emailServiceClient.enviarCorreo();
 		
 		ErrorMessage error = new ErrorMessage(6, "No se registran clientes");
 		return Response.status(Response.Status.NOT_FOUND)
