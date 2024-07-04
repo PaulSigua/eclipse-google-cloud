@@ -37,14 +37,10 @@ public class MensajeUsuarioServices {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response crear(MensajesUsuarios mensajesUsuarios) {
-        Span span = tracer.buildSpan("creacion_de_mensajes").start();
         try {
             gMsjUsuarios.guardarMensajesUsuarioss(mensajesUsuarios); // Suponiendo que esta línea guarda el mensaje de usuario
 
-            String destinatario = "";
-            String asunto = "";
-            String contenido = "";
-            emailServiceClient.enviarCorreo(destinatario,asunto,contenido);
+            emailServiceClient.enviarCorreo();
             ErrorMessage error = new ErrorMessage(1, "Mensaje creado y correo enviado correctamente");
             return Response.status(Response.Status.CREATED).entity(error).build();
         } catch (Exception e) {
@@ -52,8 +48,6 @@ public class MensajeUsuarioServices {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(error)
                     .build();
-        } finally {
-            span.finish();
         }
     }
 	

@@ -17,16 +17,15 @@ public class EmailServiceClient {
         this.restTemplate = new RestTemplate();
     }
 
-    public void enviarCorreo(String destinatario, String asunto, String contenido) {
+    public void enviarCorreo() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Construir el cuerpo de la solicitud
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            // Construir el cuerpo de la solicitud
-            String jsonBody = "{\"destinatario\": \"" + destinatario + "\", \"asunto\": \"" + asunto + "\", \"contenido\": \"" + contenido + "\"}";
-
-            HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-
             ResponseEntity<String> response = restTemplate.postForEntity(SERVER_URL, entity, String.class);
 
             if (response.getStatusCode() == HttpStatus.CREATED) {
@@ -36,10 +35,6 @@ public class EmailServiceClient {
             }
         } catch (HttpClientErrorException e) {
             System.out.println("Error al enviar el correo: " + e.getMessage());
-            // Manejar otros errores de cliente, como 4xx (BadRequest, Forbidden, etc.)
-        } catch (Exception e) {
-            System.out.println("Error general: " + e.getMessage());
-            // Manejar otros errores generales
         }
     }
 }
