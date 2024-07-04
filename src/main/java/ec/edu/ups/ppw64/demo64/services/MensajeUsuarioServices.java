@@ -45,11 +45,11 @@ public class MensajeUsuarioServices {
         Span span = tracer.buildSpan("creacion_de_mensajes").start();
         try {
             gMsjUsuarios.guardarMensajesUsuarioss(mensajesUsuarios); // Suponiendo que esta línea guarda el mensaje de usuario
-    		String a = "";
-    		String b = "";
-    		String c = "";
+            String destinatario = "";
+            String asunto = "";
+            String contenido = "";
 
-            emailServiceClient.enviarCorreo(a,b,c);
+            emailServiceClient.enviarCorreo(destinatario,asunto,contenido);
             ErrorMessage error = new ErrorMessage(1, "Mensaje creado y correo enviado correctamente");
             return Response.status(Response.Status.CREATED).entity(error).build();
         } catch (Exception e) {

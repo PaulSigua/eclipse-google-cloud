@@ -34,8 +34,15 @@ public class EmailServiceClient {
             } else {
                 System.out.println("Error al enviar el correo: " + response.getBody());
             }
+        } catch (HttpClientErrorException.MethodNotAllowed e) {
+            System.out.println("Método no permitido: " + e.getMessage());
+            // Aquí puedes manejar el caso específico del error 405
         } catch (HttpClientErrorException e) {
             System.out.println("Error al enviar el correo: " + e.getMessage());
+            // Manejar otros errores de cliente
+        } catch (Exception e) {
+            System.out.println("Error general: " + e.getMessage());
+            // Manejar otros errores generales
         }
     }
 }
