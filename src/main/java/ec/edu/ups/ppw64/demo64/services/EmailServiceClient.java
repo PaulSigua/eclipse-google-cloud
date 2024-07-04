@@ -19,17 +19,16 @@ public class EmailServiceClient {
 
     public void enviarCorreo() {
         HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
 
         // Crear una solicitud POST sin cuerpo
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        HttpEntity<String> entity = new HttpEntity<>("",headers);
 
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(SERVER_URL, entity, String.class);
 
             if (response.getStatusCode() == HttpStatus.CREATED) {
                 System.out.println("Correo enviado correctamente");
-            } else {
-                System.out.println("Error al enviar el correo: " + response.getBody());
             }
         } catch (HttpClientErrorException.MethodNotAllowed e) {
             System.out.println("Método no permitido: " + e.getMessage());
