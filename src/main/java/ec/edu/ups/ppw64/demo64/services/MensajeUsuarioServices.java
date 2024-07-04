@@ -36,7 +36,7 @@ public class MensajeUsuarioServices {
 	@Inject
 	private ConfigJaeger configjaeger;
 	
-	private static final String SERVER_URL = "http://servidor-de-correos:puerto/email/enviar"; // Ajusta la URL y el puerto según tu configuración
+	private static final String SERVER_URL = "http://35.184.173.35:8080/email/enviar"; // Ajusta la URL y el puerto según tu configuración
 
     private CloseableHttpClient httpClient = HttpClients.createDefault();
 
