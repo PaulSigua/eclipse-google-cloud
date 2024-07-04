@@ -1,5 +1,6 @@
 ec\edu\ups\ppw64\demo64\services\MensajeUsuarioServices.class
 ec\edu\ups\ppw64\demo64\dao\MensajeUsuarioDAO.class
+ec\edu\ups\ppw64\demo64\services\EmailServiceClient.class
 config\ConfigJaeger.class
 ec\edu\ups\ppw64\demo64\business\GestionDatos.class
 ec\edu\ups\ppw64\demo64\services\ErrorMessage.class

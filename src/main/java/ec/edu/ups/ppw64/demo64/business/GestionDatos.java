@@ -24,5 +24,13 @@ public class GestionDatos {
 		msj.setMensaje("Necesito más información con respecto a la tarea de ayer");
 		
 		gMensajes.guardarMensajesUsuarioss(msj);
+		
+		MensajesUsuarios msj2 = new MensajesUsuarios();
+		
+		msj2.setNombre("Bryan Torres");
+		msj2.setCorreo("bryant@gmail.com");
+		msj2.setMensaje("comprar mas ropa");
+		
+		gMensajes.guardarMensajesUsuarioss(msj2);
 	}
 }

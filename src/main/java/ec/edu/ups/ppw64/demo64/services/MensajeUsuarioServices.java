@@ -36,9 +36,7 @@ public class MensajeUsuarioServices {
 	@Inject
 	private ConfigJaeger configjaeger;
 	
-	private static final String SERVER_URL = "http://35.184.173.35:8080/email/enviar"; // Ajusta la URL y el puerto según tu configuración
-
-    private CloseableHttpClient httpClient = HttpClients.createDefault();
+	private EmailServiceClient emailServiceClient = new EmailServiceClient();
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -47,27 +45,13 @@ public class MensajeUsuarioServices {
         Span span = tracer.buildSpan("creacion_de_mensajes").start();
         try {
             gMsjUsuarios.guardarMensajesUsuarioss(mensajesUsuarios); // Suponiendo que esta línea guarda el mensaje de usuario
+    		String a = "";
+    		String b = "";
+    		String c = "";
 
-            // Aquí se envía el correo solo si se guardó el mensaje correctamente
-
-            HttpPost request = new HttpPost(SERVER_URL);
-
-            CloseableHttpResponse response = httpClient.execute(request);
-
-            try {
-                int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode == 201) {
-                    ErrorMessage error = new ErrorMessage(1, "Mensaje creado y correo enviado correctamente");
-                    return Response.status(Response.Status.CREATED).entity(error).build();
-                } else {
-                    ErrorMessage error = new ErrorMessage(99, "Error al enviar el correo: " + response.getStatusLine().getReasonPhrase());
-                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                            .entity(error)
-                            .build();
-                }
-            } finally {
-                response.close();
-            }
+            emailServiceClient.enviarCorreo(a,b,c);
+            ErrorMessage error = new ErrorMessage(1, "Mensaje creado y correo enviado correctamente");
+            return Response.status(Response.Status.CREATED).entity(error).build();
         } catch (Exception e) {
             ErrorMessage error = new ErrorMessage(99, e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -124,6 +108,7 @@ public class MensajeUsuarioServices {
 		Span span = tracer.buildSpan("borrar mensajes").start();
 	    try {
 	        gMsjUsuarios.borrarCliente(codigo);
+	        
 	        return Response.ok("OK, se borró el Usuario").build();
 	    } catch (Exception e) {
 	        ErrorMessage error = new ErrorMessage(99, "Error al eliminar el Usuario: " + e.getMessage());
