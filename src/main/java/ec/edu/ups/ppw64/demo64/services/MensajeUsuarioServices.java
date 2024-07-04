@@ -2,11 +2,6 @@ package ec.edu.ups.ppw64.demo64.services;
 
 import java.util.List;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-
 import config.ConfigJaeger;
 import ec.edu.ups.ppw64.demo64.business.GestionMensajesUsuarios;
 import ec.edu.ups.ppw64.demo64.model.MensajesUsuarios;
@@ -46,7 +41,10 @@ public class MensajeUsuarioServices {
         try {
             gMsjUsuarios.guardarMensajesUsuarioss(mensajesUsuarios); // Suponiendo que esta línea guarda el mensaje de usuario
 
-            emailServiceClient.enviarCorreo();
+            String destinatario = "";
+            String asunto = "";
+            String contenido = "";
+            emailServiceClient.enviarCorreo(destinatario,asunto,contenido);
             ErrorMessage error = new ErrorMessage(1, "Mensaje creado y correo enviado correctamente");
             return Response.status(Response.Status.CREATED).entity(error).build();
         } catch (Exception e) {
@@ -124,7 +122,6 @@ public class MensajeUsuarioServices {
 		List<MensajesUsuarios> mensajes = gMsjUsuarios.getMensajes();
 		if(mensajes.size()>0)
 			return Response.ok(mensajes).build();
-        emailServiceClient.enviarCorreo();
 		
 		ErrorMessage error = new ErrorMessage(6, "No se registran clientes");
 		return Response.status(Response.Status.NOT_FOUND)

@@ -17,25 +17,26 @@ public class EmailServiceClient {
         this.restTemplate = new RestTemplate();
     }
 
-    public void enviarCorreo() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-
-        // Crear una solicitud POST sin cuerpo
-        HttpEntity<String> entity = new HttpEntity<>("",headers);
-
+    public void enviarCorreo(String destinatario, String asunto, String contenido) {
         try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // Construir el cuerpo de la solicitud
+            String jsonBody = "{\"destinatario\": \"" + destinatario + "\", \"asunto\": \"" + asunto + "\", \"contenido\": \"" + contenido + "\"}";
+
+            HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
+
             ResponseEntity<String> response = restTemplate.postForEntity(SERVER_URL, entity, String.class);
 
             if (response.getStatusCode() == HttpStatus.CREATED) {
                 System.out.println("Correo enviado correctamente");
+            } else {
+                System.out.println("Error al enviar el correo: " + response.getBody());
             }
-        } catch (HttpClientErrorException.MethodNotAllowed e) {
-            System.out.println("Método no permitido: " + e.getMessage());
-            // Aquí puedes manejar el caso específico del error 405
         } catch (HttpClientErrorException e) {
             System.out.println("Error al enviar el correo: " + e.getMessage());
-            // Manejar otros errores de cliente
+            // Manejar otros errores de cliente, como 4xx (BadRequest, Forbidden, etc.)
         } catch (Exception e) {
             System.out.println("Error general: " + e.getMessage());
             // Manejar otros errores generales
