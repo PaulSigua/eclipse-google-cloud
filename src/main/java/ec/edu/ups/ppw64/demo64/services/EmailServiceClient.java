@@ -21,11 +21,10 @@ public class EmailServiceClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // Construir el cuerpo de la solicitud
-        String jsonBody = "{\"destinatario\": \"" + destinatario + "\", \"asunto\": \"" + asunto + "\", \"contenido\": \"" + contenido + "\"}";
+        // Construir el cuerpo de la solicitud;
 
-        HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-        
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(SERVER_URL, entity, String.class);
 
