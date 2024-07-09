@@ -27,31 +27,48 @@ public class EmailServiceClient {
         // Construir el cuerpo de la solicitud
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        try {
-            // Intentar enviar la solicitud al primer servidor
-            ResponseEntity<String> response = restTemplate.postForEntity(SERVER_URL_2, entity, String.class);
+        if (isServerAvailable(SERVER_URL_1)) {
+            // Intentar enviar la solicitud al primer servidor si está disponible
+            try {
+                ResponseEntity<String> response = restTemplate.postForEntity(SERVER_URL_1, entity, String.class);
 
-            if (response.getStatusCode() == HttpStatus.CREATED) {
-                System.out.println("Correo enviado correctamente");
-                return; // Salir del método si el correo se envió correctamente
-            } else {
-                System.out.println("Error al enviar el correo desde " + SERVER_URL_2 + ": " + response.getBody());
+                if (response.getStatusCode() == HttpStatus.CREATED) {
+                    System.out.println("Correo enviado correctamente desde " + SERVER_URL_1);
+                    return; // Salir del método si el correo se envió correctamente
+                } else {
+                    System.out.println("Error al enviar el correo desde " + SERVER_URL_1 + ": " + response.getBody());
+                }
+            } catch (HttpClientErrorException e) {
+                System.out.println("Error al enviar el correo desde " + SERVER_URL_1 + ": " + e.getMessage());
             }
-        } catch (HttpClientErrorException e) {
-            System.out.println("Error al enviar el correo desde " + SERVER_URL_2 + ": " + e.getMessage());
         }
 
-        // Si falla el primer intento, intentar con el segundo servidor
-        try {
-            ResponseEntity<String> response = restTemplate.postForEntity(SERVER_URL_1, entity, String.class);
+        // Si el primer servidor no está disponible o falla, intentar con el segundo servidor
+        if (isServerAvailable(SERVER_URL_2)) {
+            try {
+                ResponseEntity<String> response = restTemplate.postForEntity(SERVER_URL_2, entity, String.class);
 
-            if (response.getStatusCode() == HttpStatus.CREATED) {
-                System.out.println("Correo enviado correctamente");
-            } else {
-                System.out.println("Error al enviar el correo desde " + SERVER_URL_1 + ": " + response.getBody());
+                if (response.getStatusCode() == HttpStatus.CREATED) {
+                    System.out.println("Correo enviado correctamente desde " + SERVER_URL_2);
+                } else {
+                    System.out.println("Error al enviar el correo desde " + SERVER_URL_2 + ": " + response.getBody());
+                }
+            } catch (HttpClientErrorException e) {
+                System.out.println("Error al enviar el correo desde " + SERVER_URL_2 + ": " + e.getMessage());
             }
-        } catch (HttpClientErrorException e) {
-            System.out.println("Error al enviar el correo desde " + SERVER_URL_1 + ": " + e.getMessage());
+        } else {
+            System.out.println("Ambos servidores están caídos. No se pudo enviar el correo.");
+        }
+    }
+
+    private boolean isServerAvailable(String serverUrl) {
+        try {
+            // Verificar el estado del servidor haciendo una solicitud GET
+            ResponseEntity<String> response = restTemplate.getForEntity(serverUrl, String.class);
+            return response.getStatusCode() == HttpStatus.OK;
+        } catch (Exception e) {
+            System.out.println("El servidor " + serverUrl + " no está disponible: " + e.getMessage());
+            return false;
         }
     }
 }
