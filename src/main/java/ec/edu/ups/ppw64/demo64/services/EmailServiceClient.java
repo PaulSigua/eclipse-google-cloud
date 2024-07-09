@@ -64,8 +64,8 @@ public class EmailServiceClient {
 
     private boolean isServerAvailable(String serverUrl) {
         try {
-            // Verificar el estado del servidor haciendo una solicitud HEAD manualmente
-            ResponseEntity<String> response = restTemplate.exchange(serverUrl, HttpMethod.HEAD, null, String.class);
+            // Verificar el estado del servidor haciendo una solicitud GET manualmente
+            ResponseEntity<String> response = restTemplate.exchange(serverUrl, HttpMethod.GET, null, String.class);
             return response.getStatusCode() == HttpStatus.OK || response.getStatusCode() == HttpStatus.METHOD_NOT_ALLOWED;
         } catch (HttpClientErrorException e) {
             System.out.println("El servidor " + serverUrl + " no está disponible: " + e.getMessage());
