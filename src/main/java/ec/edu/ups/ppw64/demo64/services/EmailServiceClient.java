@@ -7,6 +7,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpMethod;
 
 public class EmailServiceClient {
 
@@ -63,9 +64,12 @@ public class EmailServiceClient {
 
     private boolean isServerAvailable(String serverUrl) {
         try {
-            // Verificar el estado del servidor haciendo una solicitud GET
-            ResponseEntity<String> response = restTemplate.getForEntity(serverUrl, String.class);
-            return response.getStatusCode() == HttpStatus.OK;
+            // Verificar el estado del servidor haciendo una solicitud HEAD manualmente
+            ResponseEntity<String> response = restTemplate.exchange(serverUrl, HttpMethod.HEAD, null, String.class);
+            return response.getStatusCode() == HttpStatus.OK || response.getStatusCode() == HttpStatus.METHOD_NOT_ALLOWED;
+        } catch (HttpClientErrorException e) {
+            System.out.println("El servidor " + serverUrl + " no está disponible: " + e.getMessage());
+            return false;
         } catch (Exception e) {
             System.out.println("El servidor " + serverUrl + " no está disponible: " + e.getMessage());
             return false;
