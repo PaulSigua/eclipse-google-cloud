@@ -29,29 +29,29 @@ public class EmailServiceClient {
 
         try {
             // Intentar enviar la solicitud al primer servidor
-            ResponseEntity<String> response = restTemplate.postForEntity(SERVER_URL_1, entity, String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(SERVER_URL_2, entity, String.class);
 
             if (response.getStatusCode() == HttpStatus.CREATED) {
                 System.out.println("Correo enviado correctamente");
                 return; // Salir del método si el correo se envió correctamente
             } else {
-                System.out.println("Error al enviar el correo desde " + SERVER_URL_1 + ": " + response.getBody());
-            }
-        } catch (HttpClientErrorException e) {
-            System.out.println("Error al enviar el correo desde " + SERVER_URL_1 + ": " + e.getMessage());
-        }
-
-        // Si falla el primer intento, intentar con el segundo servidor
-        try {
-            ResponseEntity<String> response = restTemplate.postForEntity(SERVER_URL_2, entity, String.class);
-
-            if (response.getStatusCode() == HttpStatus.CREATED) {
-                System.out.println("Correo enviado correctamente");
-            } else {
                 System.out.println("Error al enviar el correo desde " + SERVER_URL_2 + ": " + response.getBody());
             }
         } catch (HttpClientErrorException e) {
             System.out.println("Error al enviar el correo desde " + SERVER_URL_2 + ": " + e.getMessage());
+        }
+
+        // Si falla el primer intento, intentar con el segundo servidor
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(SERVER_URL_1, entity, String.class);
+
+            if (response.getStatusCode() == HttpStatus.CREATED) {
+                System.out.println("Correo enviado correctamente");
+            } else {
+                System.out.println("Error al enviar el correo desde " + SERVER_URL_1 + ": " + response.getBody());
+            }
+        } catch (HttpClientErrorException e) {
+            System.out.println("Error al enviar el correo desde " + SERVER_URL_1 + ": " + e.getMessage());
         }
     }
 }
